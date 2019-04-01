@@ -11,10 +11,10 @@ class RPI_SENSOR:
 	sense = SenseHat()
 	sense.clear(200,233,80)
 	
-	def __init__(self):
+	'''def __init__(self):
                 print ("hallo")
 		#self.broker = "localhost"
-		#self.port = 1883
+		#self.port = 1883'''
 	
 	#returns motion
 
@@ -29,11 +29,16 @@ class RPI_SENSOR:
 	# returns temperature	
 	
 	def temperature_sensor(self):
-		return self.sense.get_temperature()
+		return self.sense.get_temperature() -13
 
+
+        def button(self):
+                for event in sense.stick.get_events():
+                        if sense.direction=="middle":
+                                
 	
 		
-	def start(self):
+	'''def start(self):
 		
 		temp = self.temperature_sensor()
 		#print(self.motion_sensor(16))
@@ -41,5 +46,5 @@ class RPI_SENSOR:
 		print(self.humidity_sensor())
 
 testing = RPI_SENSOR()
-testing.start()
+testing.start()'''
 	
