@@ -12,20 +12,19 @@ class MQTT_Client:
     def on_connect(self, client, userdata, flags, rc):
         print('on_connect(): {}'.format(mqtt.connack_string(rc)))
         self.client.subscribe("sensor")
+        #self.client.subscribe("humidity")
         
     def on_message(self, client, userdata, msg):
         print('on_message(): topic: {}'.format(msg.topic))
-        
         try:
-            self.client.publish[("temperature", a.temperature_sensor()), ("humidity", a.humidity_sensor())]
-            
+            while True:
+                self.client.publish("temperature", a.temperature_sensor())
+                self.client.publish("humidity", a.humidity_sensor())
+                sleep(1)
 
         except e:
             print ("dette er feil", e)
-        '''try:
-            self.client.publish("humidity", a.humidity_sensor())
-        except e:
-            print(e)'''
+       
         
             
 
