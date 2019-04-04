@@ -40,7 +40,7 @@ t6 = {'trigger':'hold_button',  #user recognized the alarm and turned it off, go
 
 t7 = {'trigger':'single_button_press',  #user snoozed, start timer and go back to Sleeping
       'source':'Wake',
-      'function':start_timer('t',60000),
+      'effect':'start_timer("t",60000)',
       'target':'Sleeping'}
 
 t8 = {'trigger':'single_button_press',

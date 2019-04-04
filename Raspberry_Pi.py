@@ -38,4 +38,7 @@ class RaspberryPi:
         print("stop sending av data")
         self.client.keep_sending = False
 
+    def start_timer(self): #set timer by looking at alarm time from the website
+        print("må fikse dennse")
+
 
