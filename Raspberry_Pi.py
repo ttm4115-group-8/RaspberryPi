@@ -5,7 +5,7 @@ send sensor data, communicate with the server, wake the user and so on
 from .mqtt_rpi import mqtt_rpi
 
 
-class RaspberryPi:
+class Raspberry_Pi:
 
     def __init__(self):
         self.client = mqtt_rpi(self)

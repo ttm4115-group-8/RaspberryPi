@@ -1,7 +1,7 @@
 
 from stmpy import Machine, Driver
-from .Raspberry_Pi import RaspberryPi
-rpi = RaspberryPi()
+from .Raspberry_Pi import Raspberry_Pi
+rpi = Raspberry_Pi()
 
 # Initial transition
 t0 = {'source': 'initial',
