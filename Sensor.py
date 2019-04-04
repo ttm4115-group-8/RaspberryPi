@@ -14,7 +14,7 @@ class RPI_SENSOR:
 	sense.clear(200,233,80)
 
 	
-	def __init__(self):
+	def __init__(self, RPI):
 		self.RPI = RPI
 		self.button()
 

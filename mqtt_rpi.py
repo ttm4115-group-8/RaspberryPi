@@ -15,7 +15,6 @@ class MQTT_Client:
         keep_sending = False
         
     def send_data(self):
-        print('on_message(): topic: {}'.format(msg.topic))
         try:
             self.keep_sending = True
             while self.keep_sending:
@@ -32,7 +31,8 @@ class MQTT_Client:
         print('Connecting to {}:{}'.format(broker, port))
         self.client.connect(broker, port)
         print("connect")
-
+        
+'''
         try:
             thread = Thread(target=self.client.loop_forever())
             thread.start()
@@ -40,6 +40,6 @@ class MQTT_Client:
             print('Interrupted')
             self.client.disconnect()
 
-
 test = MQTT_Client()
 test.start(broker, port)
+'''
