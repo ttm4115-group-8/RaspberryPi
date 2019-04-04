@@ -5,10 +5,9 @@ import paho.mqtt.client as client
 from sense_hat import SenseHat
 import subprocess
 import pygame
-import Rasperry_Pi
 
 
-class RPI_SENSOR:
+class Sensor:
 
 	sense = SenseHat()
 	sense.clear(200,233,80)

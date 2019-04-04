@@ -2,21 +2,26 @@
 send sensor data, communicate with the server, wake the user and so on
 """
 
-
+from .mqtt_rpi import mqtt_rpi
 
 
 class RaspberryPi:
 
+    def __init__(self):
+        self.client = mqtt_rpi(self)
+
     def start_sensor(self): #begin sending data to the server
-        print("fsd")
+        self.client.send_data()
+
 
 
     def ring_alarm(self):
-        print("fdd")
+        self.client.sensor.alarm()
 
 
     def alarm_set(self):  #send message to state machine wether alarm is set or not
-        print("fdfsd")
+        print("hardcoded in return true and false, since I can't communicate with the server yet")
+        self.stm.send("alarm_set")
 
     def single_button_press(self):
         self.stm.send('single_button_press')
@@ -26,8 +31,11 @@ class RaspberryPi:
 
     def stop_alarm(self):
         print("mekk stopp alarm")
+        self.client.sensor.play_alarm = False
+
 
     def store_data(self):
         print("stop sending av data")
+        self.client.keep_sending = False
 
 

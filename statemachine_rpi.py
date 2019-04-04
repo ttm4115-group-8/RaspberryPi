@@ -1,16 +1,6 @@
 
 from stmpy import Machine, Driver
-import RPi.GPIO as GPIO
-import time
-import paho.mqtt.publish as publish
-import paho.mqtt.client as client
-from sense_hat import SenseHat
-import subprocess
-from threading import Thread
-import Sensor
-from time import sleep
-import pygame
-
+from .Raspberry_Pi import RaspberryPi
 rpi = RaspberryPi()
 
 # Initial transition
@@ -44,14 +34,19 @@ t5 = {'trigger':'on_notify_rpi_alarm',  #the user is active and alarm time is cl
 
 t6 = {'trigger':'hold_button',  #user recognized the alarm and turned it off, go to idle
       'source':'Wake',
-      'function':rpi.store_data,rpi.stop_alarm,
+      'function':rpi.store_data,
       'target':'Idle'}
 
 
 t7 = {'trigger':'single_button_press',  #user snoozed, start timer and go back to Sleeping
       'source':'Wake',
-      'function':start_timer(t,60000),
+      'function':start_timer('t',60000),
       'target':'Sleeping'}
+
+t8 = {'trigger':'single_button_press',
+      'source':'RecordData',
+      'function':rpi.store_data,
+      'target':'Idle'}
 
 # States:
 
@@ -65,10 +60,11 @@ Sleeping = {'name': 'Sleeping',
         'entry': 'start_sensors()'}
 
 Wake = {'name': 'Wake',
-        'entry': 'ring_alarm()'}  #this function wakes the user
+        'entry': 'ring_alarm()',
+        'exit': 'stop_alarm()'}  #this function wakes the user
 
 #set transitions and states. object is set to Raspberry_Pi, change this if class name is different
-machine = Machine(name='rpi', transitions=[t0, t1, t2, t3, t4, t5, t6, t7], obj=rpi, states=[ChoiceState, RecordData, Sleeping, Wake])
+machine = Machine(name='rpi', transitions=[t0, t1, t2, t3, t4, t5, t6, t7, t8], obj=rpi, states=[ChoiceState, RecordData, Sleeping, Wake])
 rpi.stm = machine
 
 driver = Driver()

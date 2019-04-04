@@ -1,13 +1,12 @@
 from threading import Thread
 import paho.mqtt.client as mqtt
-import Sensor
-import Raspberry_Pi
+from .Sensor import Sensor
 from time import sleep
 
 broker = "129.241.208.68"
 port = 1883
 	
-class MQTT_Client:
+class mqtt_rpi:
 
     def __init__(self, RPI):
         self.sensor = Sensor.RPI_SENSOR(RPI)
