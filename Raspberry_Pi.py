@@ -4,22 +4,25 @@ send sensor data, communicate with the server, wake the user and so on
 
 from mqtt_rpi import mqtt_rpi
 from sense_hat import SenseHat
+import threading
 	
 class Raspberry_Pi:
 
-		
-	
-	
-
 	def start_in_idle(self):
 		print("idle")
-		self.button()
-		print("ikke hit")
+		try:
+		threading.start_new_thread(self.button())
+		except:
+		print("didn't start button thread")
 		client = mqtt_rpi()
 	
 
 	def start_sensor(self): #begin sending data to the server
-		self.client.send_data()
+		try:
+		threading.start_new_thread(self.client.send_data())
+		except:
+		print("didn't start send data thread")
+		
 		print("start_sensor")
 
 
