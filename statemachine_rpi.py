@@ -1,75 +1,150 @@
 from stmpy import Machine, Driver
-from Raspberry_Pi import Raspberry_Pi
+from mqtt_rpi import mqtt_rpi
+from sense_hat import SenseHat
+import threading
+from time import sleep
+	
+class Raspberry_Pi:
+
+	client = mqtt_rpi()
+
+	def start_in_idle(self):
+		button_thread = threading.Thread(target=self.button)
+		button_thread.start()
+		
+
+	def start_sensor(self): #begin sending data to the server
+		sensor_thread = threading.Thread(target=self.client.send_data)
+		sensor_thread.start()
+
+
+
+	def ring_alarm(self):
+		alarm_thread = threading.Thread(target = self.client.sensor.alarm)
+		alarm_thread.start()
+
+
+	def alarm_set(self):  #send message to state machine wether alarm is set or not
+		#hardcoded in return true and false, since I can't communicate with the server yet
+		self.stm.send("alarm_not_set")
+
+	def single_button_press(self):
+		self.stm.send('single_button_press')
+		print("single_button_press")
+
+	def hold_button(self):
+		self.stm.send('hold_button')
+		print("hold button")
+
+	def stop_alarm(self):
+		#mekk stopp alarm
+		self.client.sensor.play_alarm = False
+
+
+	def store_data(self):
+		print("stop sending av data")
+		self.client.keep_sending = False
+
+	def start_timer(self): #set timer by looking at alarm time from the website
+		#må fikse denne
+		self.stm.send("start timer not ready")
+
+	def in_idle(self):
+		print("in idle")
+	def in_choice_state(self):
+		print("in choice state")
+	def in_record_data(self):
+		print("in record data")
+	def in_sleeping(self):
+		print("in sleeping")
+	def in_wake(self):
+		print("in wake")
+			
+	def button(self):
+		sense = SenseHat()
+		while True:
+			event = sense.stick.wait_for_event(emptybuffer = True)
+			print(event.action)
+			if event.action == "pressed":
+								print("pressed")
+								self.single_button_press()
+			elif event.action == "held":
+								self.hold_button()
+								print("held")
+			
+	
+
+
+
 
 rpi = Raspberry_Pi()
-print("stopper her")
+
 # Initial transition
 t0 = {'source': 'initial',
-      'target': 'Idle'}
+	  'target': 'Idle'}
 
 # react to singe_button_press, go to either Sleeping (if alarm is not set) or Recorddata if alarm is not set
 # runs function that returns alarm if alarm is set, and no_alarm if alarm is not set
 
 t1 = {'trigger':'single_button_press', #react to a button press
-      'source':'Idle',
-     'target': 'ChoiceState'} #go to choice state, where choice state decides where to go, Sleeping or RecordData
+	  'source':'Idle',
+	 'target': 'ChoiceState'} #go to choice state, where choice state decides where to go, Sleeping or RecordData
 
 
 t2 = {'trigger':'alarm_is_set', #alarm is set, go to sleeping
-      'source':'ChoiceState',
-      'function':rpi.start_timer, #this function starts a timer which fetches alarm time to calculate timer
-      'target':'Sleeping'}
+	  'source':'ChoiceState',
+	  'effect':'start_timer', #this function starts a timer which fetches alarm time to calculate timer
+	  'target':'Sleeping'}
 
 t3 = {'trigger':'alarm_not_set', #alarm isn't set, go to record data
-      'source':'ChoiceState',
-      'target':'RecordData'}
+	  'source':'ChoiceState',
+	  'target':'RecordData'}
 
 t4 = {'trigger':'t',  #timer is up, go to wake the user
-      'source':'Sleeping',
-     'target': 'Wake'}
+	  'source':'Sleeping',
+	 'target': 'Wake'}
 
 t5 = {'trigger':'on_notify_rpi_alarm',  #the user is active and alarm time is close, wake the user
-      'source':'Sleeping',
-      'target':'Wake'}
+	  'source':'Sleeping',
+	  'target':'Wake'}
 
 t6 = {'trigger':'hold_button',  #user recognized the alarm and turned it off, go to idle
-      'source':'Wake',
-      'function':rpi.store_data,
-      'target':'Idle'}
+	  'source':'Wake',
+	  'effect':'store_data',
+	  'target':'Idle'}
 
 
 t7 = {'trigger':'single_button_press',  #user snoozed, start timer and go back to Sleeping
-      'source':'Wake',
-      'effect':'start_timer("t",60000)',
-      'target':'Sleeping'}
+	  'source':'Wake',
+	  'effect':'start_timer("t",60000)',
+	  'target':'Sleeping'}
 
 t8 = {'trigger':'single_button_press',
-      'source':'RecordData',
-      'function':rpi.store_data,
-      'target':'Idle'}
+	  'source':'RecordData',
+	  'effect':'store_data',
+	  'target':'Idle'}
 
 # States:
 
 Idle = {'name': 'Idle',
-        'entry': 'start_in_idle()'} #this function must decide if alarm is set or not
+		'entry': 'start_in_idle();in_idle()'}
 
 ChoiceState = {'name': 'ChoiceState',
-        'entry': 'alarm_set()'} #this function must decide if alarm is set or not
+		'entry': 'alarm_set();in_choice_state()'} #this function must decide if alarm is set or not
 
 RecordData = {'name': 'RecordData',
-        'entry': 'start_sensors()'}
+		'entry': 'start_sensor();in_record_data()'}
 
 Sleeping = {'name': 'Sleeping',
-        'entry': 'start_sensors()'}
+		'entry': 'start_sensor();in_sleeping()'}
 
 Wake = {'name': 'Wake',
-        'entry': 'ring_alarm()',
-        'exit': 'stop_alarm()'}  #this function wakes the user
+		'entry': 'ring_alarm();in_wake()',
+		'exit': 'stop_alarm()'}  #this function wakes the user
 
 #set transitions and states. object is set to Raspberry_Pi, change this if class name is different
 machine = Machine(name='rpi', transitions=[t0, t1, t2, t3, t4, t5, t6, t7, t8], obj=rpi, states=[Idle, ChoiceState, RecordData, Sleeping, Wake])
 rpi.stm = machine
-print("kommer ikke hit")
 driver = Driver()
 driver.add_machine(machine)
 driver.start()

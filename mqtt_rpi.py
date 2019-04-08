@@ -8,44 +8,29 @@ import threading
 
 class mqtt_rpi:
 
-    
-
-    
     broker = "129.241.208.68"
     port = 1883
-        
-
+    sensor = Sensor()
+    client = mqtt.Client()
+    
     def __init__(self):
-        sensor = Sensor()
         keep_sending = False
         self.start()
     def send_data(self):
+        print("sender data")
         try:
             self.keep_sending = True
             while self.keep_sending:
                 self.client.publish("temperature", self.sensor.temperature_sensor())
                 self.client.publish("humidity", self.sensor.humidity_sensor())
-                sleep(1)
+                self.sensor.sense.clear(0,255,0)
+            self.sensor.sense.clear(255,0,0)
 
         except e:
             print ("dette er feil", e)
             
 
     def start(self):
-        self.client = mqtt.Client()
         print('Connecting to {}:{}'.format(self.broker, self.port))
         self.client.connect(self.broker, self.port)
         print("connect")
-        
-'''
-        try:
-            thread = Thread(target=self.client.loop_forever())
-            thread.start()
-        except KeyboardInterrupt:
-            print('Interrupted')
-            self.client.disconnect()
-
-test = MQTT_Client()
-test.start(broker, port)
-'''
-#test = mqtt_rpi()

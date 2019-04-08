@@ -9,26 +9,21 @@ import threading
 class Raspberry_Pi:
 
 	def start_in_idle(self):
-		print("idle")
-		try:
-		threading.start_new_thread(self.button())
-		except:
-		print("didn't start button thread")
+		button = threading.Thread(target = self.button())
+		button.start()
 		client = mqtt_rpi()
 	
 
 	def start_sensor(self): #begin sending data to the server
-		try:
-		threading.start_new_thread(self.client.send_data())
-		except:
+		sensor = threading.Thread(target = self.client.send_data())
+		sensor.start()
 		print("didn't start send data thread")
-		
 		print("start_sensor")
 
 
 
 	def ring_alarm(self):
-		self.client.sensor.alarm()
+		alarm = threading.Thread(target = self.client.sensor.alarm())
 
 
 	def alarm_set(self):  #send message to state machine wether alarm is set or not
@@ -37,6 +32,7 @@ class Raspberry_Pi:
 
 	def single_button_press(self):
 		self.stm.send('single_button_press')
+		print("single_button_press")
 
 	def hold_button(self):
 		self.stm.send('hold_button')
@@ -55,16 +51,14 @@ class Raspberry_Pi:
 
 	def button(self):
 		sense = SenseHat()
-		sense.clear(200,233,80)
 		print("button lytter")
 		while True:
 			for event in sense.stick.get_events():
-				if event.action == "pressed":
+				if event.action == "pressed" and not event.action == "held":
 					print("pressed")
-					sense.clear(0,0,255)
 					self.single_button_press()
 				elif event.action == "held":
-					sense.clear(255,0,255)
+					print("held")
 					self.hold_button()
 	
 

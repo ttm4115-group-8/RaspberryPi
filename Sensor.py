@@ -1,17 +1,16 @@
+import RPi.GPIO as GPIO
+import time
+import paho.mqtt.publish as publish
+import paho.mqtt.client as client
+from sense_hat import SenseHat
+import subprocess
+import pygame as pygame
+
+
 class Sensor:
 
-	import RPi.GPIO as GPIO
-	import time
-	import paho.mqtt.publish as publish
-	import paho.mqtt.client as client
-	from sense_hat import SenseHat
-	import subprocess
-	import pygame
-
-
-
 	sense = SenseHat()
-	sense.clear(200,233,80)
+	sense.clear(0,0,255)
 	
 
 	def alarm(self):
