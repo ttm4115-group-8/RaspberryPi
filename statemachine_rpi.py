@@ -1,8 +1,8 @@
-
 from stmpy import Machine, Driver
-from .Raspberry_Pi import Raspberry_Pi
-rpi = Raspberry_Pi()
+from Raspberry_Pi import Raspberry_Pi
 
+rpi = Raspberry_Pi()
+print("stopper her")
 # Initial transition
 t0 = {'source': 'initial',
       'target': 'Idle'}
@@ -50,6 +50,9 @@ t8 = {'trigger':'single_button_press',
 
 # States:
 
+Idle = {'name': 'Idle',
+        'entry': 'start_in_idle()'} #this function must decide if alarm is set or not
+
 ChoiceState = {'name': 'ChoiceState',
         'entry': 'alarm_set()'} #this function must decide if alarm is set or not
 
@@ -64,9 +67,9 @@ Wake = {'name': 'Wake',
         'exit': 'stop_alarm()'}  #this function wakes the user
 
 #set transitions and states. object is set to Raspberry_Pi, change this if class name is different
-machine = Machine(name='rpi', transitions=[t0, t1, t2, t3, t4, t5, t6, t7, t8], obj=rpi, states=[ChoiceState, RecordData, Sleeping, Wake])
+machine = Machine(name='rpi', transitions=[t0, t1, t2, t3, t4, t5, t6, t7, t8], obj=rpi, states=[Idle, ChoiceState, RecordData, Sleeping, Wake])
 rpi.stm = machine
-
+print("kommer ikke hit")
 driver = Driver()
 driver.add_machine(machine)
 driver.start()

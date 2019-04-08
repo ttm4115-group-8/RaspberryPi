@@ -1,34 +1,39 @@
 from threading import Thread
 import paho.mqtt.client as mqtt
-from .Sensor import Sensor
+from Sensor import Sensor
 from time import sleep
 
-broker = "129.241.208.68"
-port = 1883
-	
+
+
 class mqtt_rpi:
 
-    def __init__(self, RPI):
-        self.sensor = Sensor.RPI_SENSOR(RPI)
-        self.start(broker, port)
-        keep_sending = False
+    
+
+    
+    broker = "129.241.208.68"
+    port = 1883
         
+
+    def __init__(self):
+        sensor = Sensor()
+        keep_sending = False
+        self.start()
     def send_data(self):
         try:
             self.keep_sending = True
             while self.keep_sending:
-                self.client.publish("temperature", sensor.temperature_sensor())
-                self.client.publish("humidity", sensor.humidity_sensor())
+                self.client.publish("temperature", self.sensor.temperature_sensor())
+                self.client.publish("humidity", self.sensor.humidity_sensor())
                 sleep(1)
 
         except e:
             print ("dette er feil", e)
             
 
-    def start(self, broker, port):
+    def start(self):
         self.client = mqtt.Client()
-        print('Connecting to {}:{}'.format(broker, port))
-        self.client.connect(broker, port)
+        print('Connecting to {}:{}'.format(self.broker, self.port))
+        self.client.connect(self.broker, self.port)
         print("connect")
         
 '''
@@ -42,3 +47,4 @@ class mqtt_rpi:
 test = MQTT_Client()
 test.start(broker, port)
 '''
+#test = mqtt_rpi()
