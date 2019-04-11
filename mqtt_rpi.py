@@ -8,6 +8,7 @@ import threading
 
 class mqtt_rpi:
 
+    tidspunkt=None
     broker = "129.241.208.68"
     port = 1883
     sensor = Sensor()
@@ -15,6 +16,7 @@ class mqtt_rpi:
     
     def __init__(self):
         keep_sending = False
+        self.client.on_message = self.on_message
         self.start()
     def send_data(self):
         print("sender data")
@@ -29,6 +31,13 @@ class mqtt_rpi:
         except e:
             print ("dette er feil", e)
             
+
+    def get_timer(self):
+        self.client.publish("timer_request", "give me timer")
+
+    def on_message(self,client,userdata, mag):
+        self.tidspunkt=msg.payload
+        print(tidspunkt)
 
     def start(self):
         print('Connecting to {}:{}'.format(self.broker, self.port))
