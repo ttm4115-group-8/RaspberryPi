@@ -10,9 +10,12 @@ import pygame as pygame
 class Sensor:
 
 	sense = SenseHat()
-	sense.clear(0,0,255)
-	
+	sense.clear(255,0,0)
+	GPIO.setmode(GPIO.BCM)
+	GPIO.setup(16,GPIO.IN)
+		
 
+		
 	def alarm(self):
 		self.play_alarm = True
 		pygame.mixer.init()
@@ -23,10 +26,8 @@ class Sensor:
 		pygame.mixer.music.stop()				
 	#returns motion
 
-	def motion_sensor(self,SENSOR_PIN):  #define which pin the motion sensor is connected to on the breadboard
-		GPIO.setmode(GPIO.BCM)
-		GPIO.setup(SENSOR_PIN,GPIO.IN)
-		return GPIO.input(SENSOR_PIN)
+	def motion_sensor(self):  #define which pin the motion sensor is connected to on the breadboard
+		return GPIO.input(16)
 
 	def humidity_sensor(self):
 		return self.sense.get_humidity()
@@ -38,16 +39,19 @@ class Sensor:
 
 
 										
-	'''def start(self):
+	def start(self):
 		
 		temp = self.temperature_sensor()
-		#print(self.motion_sensor(16))
-		print(temp)
-		print(self.humidity_sensor())
-		self.button()
+		print(self.motion_sensor())
+		#print(temp)
+		#print(self.humidity_sensor())
+		#self.button()
 	
+"""
+testing = Sensor()
 
-testing = RPI_SENSOR()
 
-testing.start()
-'''
+while True:
+		time.sleep(1)
+		testing.start()
+"""

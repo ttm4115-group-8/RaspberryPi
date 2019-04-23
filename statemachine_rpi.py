@@ -11,6 +11,8 @@ class Raspberry_Pi:
 	client = mqtt_rpi()
 	snooze_exist = False
 	snooze_alarm = False
+	alarm_exist = False
+	run_alarm = False
 		
 	def start_button(self):
 		button_thread = threading.Thread(target=self.button)
@@ -34,7 +36,7 @@ class Raspberry_Pi:
 		if self.client.tidspunkt == None:
 						self.stm.send("alarm_not_set")
 		else:
-			self.stm.send("alarm_not_set")
+			self.stm.send("alarm_is_set")
 
 	def single_button_press(self):
 		self.stm.send('single_button_press')
@@ -60,11 +62,11 @@ class Raspberry_Pi:
 		timer_thread.start()
 
 		
-	def alarm_timer(self,alarm_time):
+	def alarm_timer(self):
 			self.run_alarm = True
 			self.alarm_exist = True
 			mins = 0
-			while mins!=alarm_time and self.run_alarm:
+			while mins!=1 and self.run_alarm:
 					sleep(10)
 					mins += 1
 			if self.run_alarm:
