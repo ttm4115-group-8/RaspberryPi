@@ -1,4 +1,4 @@
-
+# coding=utf-8
 from stmpy import Machine, Driver
 from mqtt_rpi import mqtt_rpi
 from sense_hat import SenseHat
@@ -7,7 +7,6 @@ from time import sleep
 import time
 	
 class Raspberry_Pi:
-
 	client = mqtt_rpi()
 	snooze_exist = False
 	snooze_alarm = False
