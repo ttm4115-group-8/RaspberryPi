@@ -66,7 +66,7 @@ class Raspberry_Pi:
 			self.run_alarm = True
 			self.alarm_exist = True
 			mins = 0
-			while mins!=1 and self.run_alarm:
+			while mins!=6 and self.run_alarm:
 					sleep(10)
 					mins += 1
 			if self.run_alarm:
@@ -81,7 +81,7 @@ class Raspberry_Pi:
 			self.snooze_exist = True
 			mins = 0
 			while mins!=1 and self.snooze_alarm:
-					sleep(5)
+					sleep(10)
 					mins += 1
 			if self.snooze_alarm:
 					self.stm.send("timer")
