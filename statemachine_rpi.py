@@ -141,10 +141,6 @@ t4 = {'trigger':'timer',  #timer is up, go to wake the user
 	  'source':'Sleeping',
 	 'target': 'Wake'}
 
-t5 = {'trigger':'on_notify_rpi_alarm',  #the user is active and alarm time is close, wake the user
-	  'source':'Sleeping',
-	  'target':'Wake'}
-
 t6 = {'trigger':'hold_button',  #user recognized the alarm and turned it off, go to idle
 	  'source':'Wake',
 	  'effect':'store_data',
@@ -161,7 +157,7 @@ t8 = {'trigger':'single_button_press',
 	  'effect':'store_data',
 	  'target':'Idle'}
 
-t9 = {'trigger': 'hold_button',
+t5 = {'trigger': 'hold_button',
 	  'source': 'Sleeping',
 	  'effect': 'store_data',
 	  'target':'Idle'}
@@ -185,7 +181,7 @@ Wake = {'name': 'Wake',
 		'exit': 'stop_alarm()'}  #this function wakes the user
 
 #set transitions and states. object is set to Raspberry_Pi, change this if class name is different
-machine = Machine(name='rpi', transitions=[t0, t1, t2, t3, t4, t5, t6, t7, t8, t9], obj=rpi, states=[Idle, ChoiceState, RecordData, Sleeping, Wake])
+machine = Machine(name='rpi', transitions=[t0, t1, t2, t3, t4, t5, t6, t7, t8], obj=rpi, states=[Idle, ChoiceState, RecordData, Sleeping, Wake])
 rpi.stm = machine
 driver = Driver()
 driver.add_machine(machine)
