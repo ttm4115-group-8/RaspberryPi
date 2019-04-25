@@ -33,7 +33,7 @@ class Raspberry_Pi:
 		#hardcoded in return true and false, since I can't communicate with the server yet
 		self.client.get_timer()
 		if self.client.tidspunkt == None:
-						self.stm.send("alarm_not_set")
+						self.stm.send("alarm_is_set")
 		else:
 			self.stm.send("alarm_is_set")
 
@@ -65,8 +65,8 @@ class Raspberry_Pi:
 			self.run_alarm = True
 			self.alarm_exist = True
 			mins = 0
-			while mins!=6 and self.run_alarm:
-					sleep(10)
+			while mins!=1 and self.run_alarm:
+					sleep(60)
 					mins += 1
 			if self.run_alarm:
 					self.stm.send("timer")
